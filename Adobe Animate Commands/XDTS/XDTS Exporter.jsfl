@@ -106,7 +106,10 @@
 
 		// Check if there's a document open.
 		var doc = fl.getDocumentDOM();
-		if (!doc) return;
+		if (!doc) {
+			alert("Please open a document and try again.");
+			return;
+		}
 
 		// Present dialogue.
 		var xmlURI = fl.scriptURI.replace(fl.scriptURI.split("/").pop(), "XDTS Assets/XDTS Exporter.xml");
