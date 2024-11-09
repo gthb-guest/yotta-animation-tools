@@ -20,6 +20,11 @@
 	//	Create Global Variables
 	//----------------------------
 	var doc = fl.getDocumentDOM();
+	if (!doc) {
+		alert("Please open a document and try again.");
+		return;
+	}
+
 	var scene = doc.getTimeline();
 
 	// Check if there's even a camera.
@@ -128,7 +133,7 @@
 			element.scaleY = camElement.scaleY;
 		}
 	}
-	
+
 	// Create keyframes.
 	for (var i = 0; i < cameraLayer.frameCount; i++) {
 		var frame = cameraLayer.frames[i];
