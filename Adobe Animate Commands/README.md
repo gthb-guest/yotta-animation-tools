@@ -1,6 +1,6 @@
-#Adobe Animate Commands
+# Adobe Animate Commands
 
-##Installation
+## Installation
 Copy **JSFL** files and **XML** files into the Adobe Animate Commands directory.
 
 Windows
