@@ -28,6 +28,11 @@
 	}
 
 	var doc = fl.getDocumentDOM();
+	if (!doc) {
+		alert("Please open a document and try again.");
+		return;
+	}
+
 	var scene = doc.getTimeline();
 
 	// Present dialogue.
