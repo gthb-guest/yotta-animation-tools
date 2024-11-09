@@ -19,32 +19,39 @@
 //	- Initial Release
 //==================================================
 
-var doc = fl.getDocumentDOM();
-var scene = doc.getTimeline();
+(function () {
+	var doc = fl.getDocumentDOM();
+	if (!doc) {
+		alert("Please open a document and try again.");
+		return;
+	}
 
-scene.duplicateLayers();
-var newLayer = scene.mergeLayers();
+	var scene = doc.getTimeline();
 
-// Version 1.1
-newLayer.visible = true;
-newLayer.locked = false;
+	scene.duplicateLayers();
+	var newLayer = scene.mergeLayers();
 
-// Go through the elements and change the alpha to 0.
-for (var i in newLayer.frames) {
-	var frame = newLayer.frames[i];
-	scene.currentFrame = frame.startFrame;
-	
-	doc.selectNone();
-	
-	// Loop through and only select shapes.
-	for (var j in frame.elements) {
-		var element = frame.elements[j];
-		
-		if (element.elementType == "shape") {
-			doc.selection = [element];
-			doc.setStrokeColor("#00000000");
-			doc.setFillColor("#00000000");
-			doc.selectNone();
+	// Version 1.1
+	newLayer.visible = true;
+	newLayer.locked = false;
+
+	// Go through the elements and change the alpha to 0.
+	for (var i in newLayer.frames) {
+		var frame = newLayer.frames[i];
+		scene.currentFrame = frame.startFrame;
+
+		doc.selectNone();
+
+		// Loop through and only select shapes.
+		for (var j in frame.elements) {
+			var element = frame.elements[j];
+
+			if (element.elementType == "shape") {
+				doc.selection = [element];
+				doc.setStrokeColor("#00000000");
+				doc.setFillColor("#00000000");
+				doc.selectNone();
+			}
 		}
 	}
-}
+})();
