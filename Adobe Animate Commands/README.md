@@ -11,3 +11,5 @@ Mac OS
 >Macintosh HD/Users/[username]/Library/Application Support/Adobe/Animate [version]/language/Configuration/Commands
 
 **DO NOT MOVE FILES OUT OF THEIR ASSET FOLDERS! THIS WILL BREAK THE COMMAND!**
+
+For best results, go to the [releases](https://github.com/gthb-guest/yotta-animation-tools/releases) section to download all of the scripts in one bundle.
