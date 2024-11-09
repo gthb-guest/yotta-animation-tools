@@ -1,0 +1,68 @@
+<dialog id="mainWindow" title="CLIP Studio Timesheet Importer">
+
+<script>
+    
+    function xdtsBrowse() {
+        var result = fl.browseForFileURL("open", "Select XDTS file", "Toei Digital Time Sheet (*.xdts)", "xdts");
+        fl.xmlui.set("xdtsURITextbox", FLfile.uriToPlatformPath(result));
+    }
+    
+    function assetBrowse() {
+        var result = fl.browseForFolderURL();
+        fl.xmlui.set("assetURITextbox", FLfile.uriToPlatformPath(result));
+    }
+    
+    function exportFiles() {
+        if (fl.xmlui.get("xdtsURITextbox").length == 0) {
+            alert("Please select a XDTS file.");
+        } else if (fl.xmlui.get("assetURITextbox").length == 0) {
+            alert("Please select an asset folder.");
+        } else if (fl.xmlui.get("fpsTextbox").length == 0) {
+            alert("Please input an FPS folder.");
+        }
+        else {
+            fl.xmlui.accept();
+        }
+    }
+    
+    function checkFPS() {
+        var fps = fl.xmlui.get("fpsTextbox");
+        
+        if (!Number(fps)) fl.xmlui.set("fpsTextbox", "");
+        
+        if (fps.length > 3) fl.xmlui.set("fpsTextbox", fps.slice(0, 3));
+    }
+</script>
+
+<!-- Browse for xdts location. -->
+<label value="Please select the location of the XDTS file."/>
+<hbox>
+    <textbox id="xdtsURITextbox" value="" width="450"/>
+    <button id="xdtsBrowseURIButton" label="Browse" width="50" oncommand="xdtsBrowse();"/>
+</hbox>
+
+<checkbox id="importFolderStructureCheckbox" label="Import Folder Structure" checked="true"/>
+
+<hbox>
+    <label value="FPS"/>
+    <textbox id="fpsTextbox" value="24" width="40" onchange="checkFPS();"/>
+</hbox>
+
+<separator/>
+
+<!-- Browse for asset location. -->
+<label value="Please select the location of the asset folder."/>
+<hbox>
+    <textbox id="assetURITextbox" value="" width="450"/>
+    <button id="assetBrowseURIButton" label="Browse" width="50" oncommand="assetBrowse();"/>
+</hbox>
+
+<separator/>
+
+<!-- Bottom Buttons -->
+<hbox>
+    <spacer/>
+    <button id="cancelButton" label="Cancel" width="50" oncommand="fl.xmlui.cancel();"/>
+    <button id="exportButton" label="Import" width="50" oncommand="exportFiles();"/>
+</hbox>
+</dialog>

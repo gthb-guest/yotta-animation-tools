@@ -1,0 +1,81 @@
+<dialog id="mainWindow" title="XDTS Exporter">
+
+<script>
+    function browse() {
+        var result = fl.browseForFolderURL();
+        fl.xmlui.set("exportURITextbox", FLfile.uriToPlatformPath(result));
+    }
+    
+    function exportFiles() {
+        if (fl.xmlui.get("exportURITextbox").length == 0 || fl.xmlui.get("nameTextbox").length == 0) {
+            alert("Please select an export location.");
+        } else {
+            fl.xmlui.accept();
+        }
+    }
+    
+    function updateImageOptions() {
+        if (fl.xmlui.get("exportCelsCheckbox") == "true") {
+            fl.xmlui.setEnabled("imageFormatMenu", true);
+            fl.xmlui.setEnabled("exportFoldersCheckbox", true);
+        }
+        else {
+            fl.xmlui.setEnabled("imageFormatMenu", false);
+            fl.xmlui.setEnabled("exportFoldersCheckbox", false);
+        }
+    }
+    
+    function removeFileSuffix(uri) {
+            // If it has a period.
+            if (uri.indexOf(".") !== -1) {
+                return uri.slice(0, uri.lastIndexOf("."));
+            } else return uri;
+        }
+    
+    function getName() {
+        fl.xmlui.set("nameTextbox", removeFileSuffix(fl.getDocumentDOM().name));
+    }
+    
+</script>
+
+<!-- Browse for export location. -->
+<hbox>
+    <label value="Name: "/>
+    <textbox id="nameTextbox" value="" width="450" oncreate="getName();"/>
+</hbox>
+<label value="Please select an export location."/>
+<hbox>
+    <textbox id="exportURITextbox" value="" width="450"/>
+    <button id="browseURIButton" label="Browse" width="50" oncommand="browse();"/>
+</hbox>
+<checkbox id="exportVisibleCheckbox" label="Only Export Visible Layers" checked="true"/>
+
+
+<separator/>
+
+<!-- General Export Options -->
+<vbox>
+    <checkbox id="exportCelsCheckbox" label="Export Cels" checked="true" oncommand="updateImageOptions();"/>
+    <hbox>
+        <label value="Image File Type: "/>
+        <menulist id="imageFormatMenu">
+            <menupopup>
+                <menuitem label="PNG" selected="true"/>
+                <menuitem label="SVG"/>
+            </menupopup>
+        </menulist>
+    </hbox>
+    <label value="This will use your current publish settings. To change, go to: File > Publish Settings"/>
+    
+    <checkbox id="exportFoldersCheckbox" label="Export Folder Structure" checked="true"/>
+</vbox>
+
+<separator/>
+
+<!-- Bottom Buttons -->
+<hbox>
+    <spacer/>
+    <button id="cancelButton" label="Cancel" width="50" oncommand="fl.xmlui.cancel();"/>
+    <button id="exportButton" label="Export" width="50" oncommand="exportFiles();"/>
+</hbox>
+</dialog>

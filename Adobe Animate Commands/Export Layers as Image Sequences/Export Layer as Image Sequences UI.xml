@@ -1,0 +1,46 @@
+<dialog id="mainWindow" title="Export Layers as Image Sequences">
+
+<script>
+    function browse() {
+        var result = fl.browseForFolderURL();
+        fl.xmlui.set("exportURITextbox", FLfile.uriToPlatformPath(result));
+    }
+    
+    function exportFile() {
+        if (fl.xmlui.get("exportURITextbox").length == 0) {
+            alert("Please select an export location.");
+        } else {
+            fl.xmlui.accept();
+        }
+    }
+</script>
+
+<!-- Browse for export location. -->
+<label value="Please select an export location."/>
+<hbox>
+    <textbox id="exportURITextbox" value="" width="450"/>
+    <button id="browseURIButton" label="Browse" width="50" oncommand="browse();"/>
+</hbox>
+
+<!-- General Export Options -->
+<vbox>
+    <hbox>
+        <label value="Image File Type: "/>
+        <menulist id="imageFormatMenu">
+            <menupopup>
+                <menuitem label="PNG" selected="true"/>
+                <menuitem label="SVG"/>
+            </menupopup>
+        </menulist>
+    </hbox>
+</vbox>
+
+<separator/>
+
+<!-- Bottom Buttons -->
+<hbox>
+    <spacer/>
+    <button id="cancelButton" label="Cancel" width="50" oncommand="fl.xmlui.cancel();"/>
+    <button id="exportButton" label="Export" width="50" oncommand="exportFile();"/>
+</hbox>
+</dialog>
