@@ -1,4 +1,4 @@
-<dialog id="mainWindow" title="CLIP Studio Timesheet Importer">
+﻿<dialog id="mainWindow" title="CLIP Studio Timesheet Importer">
 
 <script>
     
@@ -41,8 +41,6 @@
     <button id="xdtsBrowseURIButton" label="Browse" width="50" oncommand="xdtsBrowse();"/>
 </hbox>
 
-<checkbox id="importFolderStructureCheckbox" label="Import Folder Structure" checked="true"/>
-
 <hbox>
     <label value="FPS"/>
     <textbox id="fpsTextbox" value="24" width="40" onchange="checkFPS();"/>
@@ -56,6 +54,8 @@
     <textbox id="assetURITextbox" value="" width="450"/>
     <button id="assetBrowseURIButton" label="Browse" width="50" oncommand="assetBrowse();"/>
 </hbox>
+<checkbox id="importFolderStructureCheckbox" label="Import Folder Structure" checked="true"/>
+<checkbox id="framesAreInLayerFoldersCheckbox" label="Frames are Contained in Layer Folders" checked="true"/>
 
 <separator/>
 

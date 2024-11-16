@@ -1,4 +1,4 @@
-<dialog id="mainWindow" title="XDTS Exporter">
+﻿<dialog id="mainWindow" title="XDTS Exporter">
 
 <script>
     function browse() {
@@ -68,6 +68,7 @@
     <label value="This will use your current publish settings. To change, go to: File > Publish Settings"/>
     
     <checkbox id="exportFoldersCheckbox" label="Export Folder Structure" checked="true"/>
+	<checkbox id="exportLayerFoldersCheckbox" label="Export Frames in Layer Folders" checked="true"/>
 </vbox>
 
 <separator/>

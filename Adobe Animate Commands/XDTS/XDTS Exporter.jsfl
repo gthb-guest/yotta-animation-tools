@@ -6,6 +6,12 @@
 		fl.trace(text);
 	}
 
+	function padZeroes(number, maxLength) {
+		var numberString = number.toString();
+		var array = Array((maxLength + 1) - numberString.length)
+		return array.join("0") + numberString;
+	}
+
 	function include(file) {
 		var uri = fl.scriptURI.slice(0, fl.scriptURI.lastIndexOf("/"));
 		fl.runScript(uri + file);
@@ -123,6 +129,7 @@
 		var shouldExportPNG = mainWindow.imageFormatMenu == "PNG" ? true : false;
 		var shouldExportFolders = mainWindow.exportFoldersCheckbox == "true" ? true : false;
 		var exportName = mainWindow.nameTextbox;
+		var shouldExportLayersInFolders = mainWindow.exportLayerFoldersCheckbox == "true" ? true : false;
 
 		// Get scene.
 		var scene = doc.getTimeline();
@@ -195,13 +202,14 @@
 							track.addFrame(j, XDTSFrameSymbol.empty);
 						}
 					} else {
-						track.addFrame(j, frameCounter.toString());
+						//track.addFrame(j, frameCounter.toString());
+						track.addFrame(j, layer.name + "-" + padZeroes(frameCounter, 4));
 						frameCounter++;
 					}
 				}
 			}
 
-			// Add the track.
+			// Add the track.dd
 			field.tracks.push(track);
 		}
 
@@ -247,11 +255,15 @@
 				if (!isVisible) continue;
 			}
 
-			// Create a folder for the layer.
+			// Create a URI for the main folder.
 			var currentURI = saveLocationURI + "/" + exportName + "/"
 			if (shouldExportFolders) currentURI += generateParentURI(layer);
-			currentURI += layer.name + "/";
-			FLfile.createFolder(currentURI);
+		
+			// Create a URI for the layer folder.
+			if (shouldExportLayersInFolders) currentURI += layer.name + "/";
+		
+			// Create the folder.
+			if (FLfile.exists(currentURI) != true) FLfile.createFolder(currentURI);
 
 			// Make visible.
 			layer.visible = true;
@@ -264,7 +276,7 @@
 				if (frame.isEmpty == false && frame.startFrame == j) {
 					scene.currentFrame = j;
 
-					var exportURI = currentURI + frameCount;
+					var exportURI = currentURI + layer.name + "-" + padZeroes(frameCount, 4);
 
 					if (shouldExportPNG) doc.exportPNG(exportURI + ".png", true, true);
 					else doc.exportSVG(exportURI + ".svg", true, true);

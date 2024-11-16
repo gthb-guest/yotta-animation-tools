@@ -11,25 +11,37 @@
 		fl.runScript(uri + file);
 	}
 
-	function searchForLayerInFolder(name, uri) {
-
+	function searchForLayerInFolder(name, uri, areFramesInFolders) {
 		var folders = FLfile.listFolder(uri, "directories");
-		if (!folders) return;
+		
+		// If no further folders are found, check if the frames are not in a folder.
+		if (!areFramesInFolders) {
+			
+			var files = FLfile.listFolder(uri, "files");
+			
+			for (var i=0; i<files.length; i++) {
+				var file = files[i];
+				
+				if (file.match(name)) {
+					return uri;
+				}
+			}
+		}
 
 		for (var i = 0; i < folders.length; i++) {
 			var folderName = folders[i];
 			var newURI = uri + "/" + folderName;
-
+			
 			if (folderName == name) return newURI;
 			else {
-				var result = searchForLayerInFolder(name, newURI);
+				var result = searchForLayerInFolder(name, newURI, areFramesInFolders);
 				if (result) return result;
 			}
 		}
 	}
 
 	function main() {
-
+		
 		// Present dialogue.
 		var xmlURI = fl.scriptURI.replace(fl.scriptURI.split("/").pop(), "XDTS Assets/XDTS Importer.xml");
 		var mainWindow = fl.xmlPanel(xmlURI);
@@ -41,6 +53,7 @@
 		var assetFolderURI = FLfile.platformPathToURI(mainWindow.assetURITextbox);
 		var fps = Number(mainWindow.fpsTextbox);
 		var shouldImportFolderStructure = mainWindow.importFolderStructureCheckbox == "true" ? true : false;
+		var areFramesInLayerFolders = mainWindow.framesAreInLayerFoldersCheckbox == "true" ? true : false;
 
 		// Remove the first line.
 		var xdts = JSON.parse(xdtsString.slice(xdtsString.indexOf("\n"), xdtsString.length));
@@ -75,13 +88,17 @@
 			var trackName = trackNames[i];
 
 			// Create folders.
-			var fullLayerURI = searchForLayerInFolder(trackName, assetFolderURI);
+			var fullLayerURI = searchForLayerInFolder(trackName, assetFolderURI, areFramesInLayerFolders);
+			
 			if (shouldImportFolderStructure) {
 
 				if (!fullLayerURI) continue;
 				else if (fullLayerURI.length > 0) {
 
-					var folderList = fullLayerURI.slice(0, fullLayerURI.lastIndexOf("/")).replace(assetFolderURI, "").split("/");
+					var folderList = [];
+					if (areFramesInLayerFolders) folderList = fullLayerURI.slice(0, fullLayerURI.lastIndexOf("/")).replace(assetFolderURI, "").split("/");
+					else folderList = fullLayerURI.replace(assetFolderURI, "").split("/");
+					
 					folderList = folderList.splice(1, folderList.length);
 
 					if (folderList.length > 0) {
@@ -127,6 +144,7 @@
 			// Create frames.
 			var frames = track.frames;
 			for (var j = 0; j < frames.length; j++) {
+				
 				var frame = frames[j];
 				var startTime = frame.frame;
 				var symbol = frame.data[0].values[0];
@@ -134,14 +152,16 @@
 				scene.currentFrame = startTime;
 				if (startTime > 0) scene.insertBlankKeyframe(startTime);
 
-				if (!Number(symbol) && symbol != "0") {
-
+				if (symbol == "SYMBOL_TICK_1" || symbol == "SYMBOL_TICK_2" || symbol == "SYMBOL_NULL_CELL") {
+					
 					switch (symbol) {
 						case "SYMBOL_TICK_1":
 							currentLayer.frames[currentLayer.frameCount - 1].name = "tween";
 							break;
 						case "SYMBOL_TICK_2":
 							currentLayer.frames[currentLayer.frameCount - 1].name = "reverse";
+							break;
+						case "SYMBOL_NULL_CELL":
 							break;
 						default:
 							break;
@@ -150,6 +170,7 @@
 				} else {
 					// Look for the file in the folder.
 					var fileURI = fullLayerURI + "/" + symbol + ".png";
+					
 					/*if (!FLfile.exists(fileURI)) {
 						fileURI = fullLayerURI + "/" + symbol + ".svg";
 					}*/
